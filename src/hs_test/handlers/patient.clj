@@ -8,13 +8,17 @@
 (s/def ::gender (s/and string? (partial re-matches #"^(MALE|FEMALE)$")))
 (s/def ::birthday (s/and string? (partial re-matches #"^(20|19)?\d{2}-\d{2}-\d{2}$")))
 (s/def ::medical-insurance string?)
+(s/def ::middle-name string?)
+(s/def ::address string?)
 (s/def ::id (s/and string? (partial re-matches #"[0-9]+")))
 
 (s/def ::create-validation-schema (s/keys :req-un [::first-name ::last-name ::gender
-                                                   ::birthday ::medical-insurance]))
+                                                   ::birthday ::medical-insurance]
+                                          :opt-un [::address ::middle-name]))
 (s/def ::update-validation-schema (s/keys :req-un [::first-name ::last-name ::gender
                                                    ::birthday ::medical-insurance
-                                                   ::id]))
+                                                   ::id]
+                                          :opt-un [::address ::middle-name]))
 (s/def ::delete-validation-schema (s/keys :req-un [::id]))
 
 (def create-validate-map {:first-name        "first-name is not valid"
@@ -51,7 +55,9 @@
   (let [validation-errors (validate body ::create-validation-schema create-validate-map)]
 
     (if (empty? validation-errors)
-      (make-response 200 (create-patient body))
+      (try
+        (make-response 200 (create-patient body))
+        (catch Exception e (make-response 500 {:message e})))
       (make-response 400 {:message "validation errors"
                           :errors  validation-errors}))))
 
@@ -59,7 +65,9 @@
   (let [validation-errors (validate (merge body route-params) ::update-validation-schema update-validate-map)]
 
     (if (empty? validation-errors)
-      (make-response 200 (update-patient body, route-params))
+      (try
+        (make-response 200 (update-patient (route-params :id) body))
+        (catch Exception e (make-response 500 {:message e})))
       (make-response 400 {:message "validation errors"
                           :errors  validation-errors}))))
 
@@ -67,7 +75,9 @@
   (let [validation-errors (validate {:id id} ::delete-validation-schema delete-validate-map)]
 
     (if (empty? validation-errors)
-      (make-response 200 (delete-patient id))
+      (try
+        (make-response 200 (delete-patient id))
+        (catch Exception e (make-response 500 {:message e})))
       (make-response 400 {:message "validation errors"
                           :errors  validation-errors}))))
 

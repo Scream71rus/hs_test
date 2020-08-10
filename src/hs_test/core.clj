@@ -3,9 +3,9 @@
             [compojure.route :as route]
             [ring.middleware.defaults :refer [wrap-defaults site-defaults]]
             [hs-test.handlers.patient :refer [patient]]
-            [clj-postgresql.core :as pg]
             [ring.middleware.json :as middleware]
-            [hs-test.db :refer [db-connect]]))
+            [hs-test.db :refer [db-connect]]
+            [environ.core :refer [env]]))
 
 (db-connect)
 
@@ -13,11 +13,19 @@
   (-> (routes patient
       (route/not-found "Not Found"))))
 
-(def app
+(defn make-app-test []
+  (-> app-routes
+      (middleware/wrap-json-body {:keywords? true})
+      (wrap-defaults (assoc-in site-defaults [:security :anti-forgery] false))))
+
+(defn make-app []
   (-> app-routes
       (middleware/wrap-json-body {:keywords? true})
       middleware/wrap-json-response
       (wrap-defaults (assoc-in site-defaults [:security :anti-forgery] false))))
+
+(def app
+  (if (= (env :env) "test") (make-app-test) (make-app)))
 
 ; lein ring server-headless
 ; lein repl

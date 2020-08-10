@@ -11,14 +11,13 @@
 (defn get-patient [patient-id]
   (query! ["select * from hs_test.patient where id = ?" patient-id]))
 
-;; TODO добавить middle-name и address
-(defn create-patient [{:keys [first-name last-name gender birthday medical-insurance]}]
-   (query! ["insert into hs_test.patient(first_name, last_name, gender, birthday, medical_insurance)
-            values(?, ?, ?::gender_type, ?::timestamp, ?) returning *"
-              first-name last-name gender birthday medical-insurance]))
+(defn create-patient [{:keys [first-name last-name gender birthday medical-insurance middle-name address]}]
+   (query! ["insert into hs_test.patient(first_name, last_name, gender, birthday, medical_insurance,
+                                         middle_name, address)
+            values(?, ?, ?::gender_type, ?::timestamp, ?, ?, ?) returning *"
+              first-name last-name gender birthday medical-insurance middle-name address]))
 
-(defn update-patient [{:keys [first-name last-name middle-name gender address birthday medical-insurance]}
-                      {:keys [id]}]
+(defn update-patient [id {:keys [first-name last-name middle-name gender address birthday medical-insurance]}]
   (query! ["update hs_test.patient set first_name = ?, last_name = ?, middle_name = ?,
                                        gender = ?::gender_type, address = ?,
                                        birthday = ?::timestamp, medical_insurance = ?
