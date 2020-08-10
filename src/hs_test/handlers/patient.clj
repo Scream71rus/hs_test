@@ -58,7 +58,7 @@
       (try
         (make-response 200 (create-patient body))
         (catch Exception e (make-response 500 {:message e})))
-      (make-response 400 {:message "validation errors"
+      (make-response 400 {:message "validation error"
                           :errors  validation-errors}))))
 
 (defn put-handler [{:keys [body route-params]}]
@@ -68,7 +68,7 @@
       (try
         (make-response 200 (update-patient (route-params :id) body))
         (catch Exception e (make-response 500 {:message e})))
-      (make-response 400 {:message "validation errors"
+      (make-response 400 {:message "validation error"
                           :errors  validation-errors}))))
 
 (defn delete-handler [id]
@@ -78,7 +78,7 @@
       (try
         (make-response 200 (delete-patient id))
         (catch Exception e (make-response 500 {:message e})))
-      (make-response 400 {:message "validation errors"
+      (make-response 400 {:message "validation error"
                           :errors  validation-errors}))))
 
 (defroutes patient
