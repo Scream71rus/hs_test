@@ -47,9 +47,9 @@
    :body   body})
 
 (defn get-handler []
-  {:status 200
-   :body   {:ok   true
-            :data (get-patients)}})
+  (try
+    (make-response 200 (get-patients))
+    (catch Exception e (make-response 500 {:message e}))))
 
 (defn post-handler [{:keys [body]}]
   (let [validation-errors (validate body ::create-validation-schema create-validate-map)]

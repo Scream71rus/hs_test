@@ -1,9 +1,5 @@
 # hs_test
 
-FIXME
-
-## Prerequisites
-
 You will need [Leiningen][] 2.0.0 or above installed.
 
 [leiningen]: https://github.com/technomancy/leiningen
@@ -13,6 +9,19 @@ You will need [Leiningen][] 2.0.0 or above installed.
 To start a web server for the application, run:
 
     lein ring server
+
+To start tests, run:
+
+    lein test
+    
+
+To start REPL, run:
+
+    lein repl
+
+To start in docker, run:    
+
+    docker-compose up --build
 
 ## License
 

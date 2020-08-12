@@ -5,7 +5,7 @@
 (def db (atom nil))
 
 (defn db-connect []
-  (reset! db (pg/pool :host (env :db-host)
-            :user (env :db-user)
-            :dbname (env :db-name)
-            :password (env :db-password))))
+  (reset! db (pg/pool :host (env :dbhost)
+            :user (env :dbuser)
+            :dbname (env :dbname)
+            :password (env :dbpassword))))

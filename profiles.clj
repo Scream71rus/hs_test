@@ -1,12 +1,12 @@
-{:dev  {:env {:db-host "localhost"
-              :db-user "hs_test"
-              :db-name "hs_test"
-              :db-password "hs_test"
+{:dev  {:env {:dbhost "localhost"
+              :dbuser "hs_test"
+              :dbname "hs_test"
+              :dbpassword "hs_test"
               :env "dev"}}
 
- :test {:env {:db-host "localhost"
-              :db-user "hs_test"
-              :db-name "hs_test_test"
-              :db-password "hs_test"
+ :test {:env {:dbhost "localhost"
+              :dbuser "hs_test"
+              :dbname "hs_test_test"
+              :dbpassword "hs_test"
               :env "test"}}}
 

@@ -1,11 +1,11 @@
-create schema hs_test;
+create schema if not exists hs_test;
 
 create type hs_test.gender_type as enum(
     'MALE',
     'FEMALE'
 );
 
-create table hs_test.patient(
+create table if not exists hs_test.patient(
     id serial primary key,
 
     first_name text not null,

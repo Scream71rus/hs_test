@@ -26,6 +26,3 @@
 
 (def app
   (if (= (env :env) "test") (make-app-test) (make-app)))
-
-; lein ring server-headless
-; lein repl

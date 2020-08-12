@@ -1,0 +1,24 @@
+db:
+  image: postgres
+  container_name: db
+  restart: always
+  environment:
+    POSTGRES_USER: hs_test
+    POSTGRES_PASSWORD: hs_test
+    POSTGRES_DB: hs_test
+
+hs_test:
+  build: .
+  dockerfile: Dockerfile
+  links:
+    - db
+  ports:
+    - "3000:3000"
+  environment:
+    dbhost: db
+    env: "prod"
+    dbuser: "hs_test"
+    dbname: "hs_test"
+    dbpassword: "hs_test"
+
+    PGPASSWORD: "hs_test"
