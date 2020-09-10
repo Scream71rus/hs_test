@@ -1,28 +1,51 @@
 (ns hs-test.models.patient-model
   (:require [clojure.java.jdbc :as jdbc]
-            [hs-test.db :refer [db]]))
+            [hs-test.db :refer [db]]
+            [honeysql.core :as sql]
+            [honeysql.helpers :refer :all :as helpers]
+            [honeysql-postgres.format]
+            [honeysql-postgres.helpers :as psqlh]))
 
-(defn query! [sql]
-  (jdbc/query @db sql))
+(defn query! [sql-map]
+  (jdbc/query db (sql/format sql-map)))
 
 (defn get-patients []
-  (query! ["select * from hs_test.patient"]))
+  (-> (select :*)
+      (from :patient)
+      (order-by :created)
+      query!))
 
-(defn get-patient [patient-id]
-  (query! ["select * from hs_test.patient where id = ?" patient-id]))
+(defn create-patient [{:keys [first_name last_name gender birthday medical_insurance middle_name address]}]
+  (-> (insert-into :patient)
+      (values [{:first_name first_name
+                :last_name last_name
+                :gender (sql/call :cast gender :gender_type)
+                :birthday (sql/call :cast birthday :timestamp)
+                :medical_insurance medical_insurance
+                :middle_name middle_name
+                :address address}])
+      (psqlh/returning :*)
+      query!
+      first))
 
-(defn create-patient [{:keys [first-name last-name gender birthday medical-insurance middle-name address]}]
-   (query! ["insert into hs_test.patient(first_name, last_name, gender, birthday, medical_insurance,
-                                         middle_name, address)
-            values(?, ?, ?::gender_type, ?::timestamp, ?, ?, ?) returning *"
-              first-name last-name gender birthday medical-insurance middle-name address]))
-
-(defn update-patient [id {:keys [first-name last-name middle-name gender address birthday medical-insurance]}]
-  (query! ["update hs_test.patient set first_name = ?, last_name = ?, middle_name = ?,
-                                       gender = ?::gender_type, address = ?,
-                                       birthday = ?::timestamp, medical_insurance = ?
-           where id = ? returning *"
-           first-name last-name middle-name gender address birthday medical-insurance (Integer/parseInt id)]))
+(defn update-patient [id {:keys [first_name last_name middle_name gender address birthday medical_insurance]}]
+  (-> (helpers/update :patient)
+      (sset {:first_name first_name
+             :last_name last_name
+             :gender (sql/call :cast gender :gender_type)
+             :birthday (sql/call :cast birthday :timestamp)
+             :medical_insurance medical_insurance
+             :middle_name middle_name
+             :address address})
+      (where [:= :id (Integer/parseInt id)])
+      (psqlh/returning :*)
+      query!
+      first))
 
 (defn delete-patient [id]
-  (query! ["delete from hs_test.patient where id = ? returning id" (Integer/parseInt id)]))
+  (-> (delete-from :patient)
+      (where [:= :id (Integer/parseInt id)])
+      (psqlh/returning :id)
+      query!
+      first))
+

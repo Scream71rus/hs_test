@@ -20,5 +20,6 @@ hs_test:
     dbuser: "hs_test"
     dbname: "hs_test"
     dbpassword: "hs_test"
-
+    dbtype: "postgresql"
+    dbport: "5432"
     PGPASSWORD: "hs_test"

@@ -49,7 +49,7 @@
 (defn get-handler []
   (try
     (make-response 200 (get-patients))
-    (catch Exception e (make-response 500 {:message e}))))
+    (catch Exception e (make-response 400 {:message e}))))
 
 (defn post-handler [{:keys [body]}]
   (let [validation-errors (validate body ::create-validation-schema create-validate-map)]
@@ -57,7 +57,7 @@
     (if (empty? validation-errors)
       (try
         (make-response 200 (create-patient body))
-        (catch Exception e (make-response 500 {:message e})))
+        (catch Exception e (make-response 400 {:message e})))
       (make-response 400 {:message "validation error"
                           :errors  validation-errors}))))
 
@@ -67,7 +67,7 @@
     (if (empty? validation-errors)
       (try
         (make-response 200 (update-patient (route-params :id) body))
-        (catch Exception e (make-response 500 {:message e})))
+        (catch Exception e (make-response 400 {:message e})))
       (make-response 400 {:message "validation error"
                           :errors  validation-errors}))))
 
@@ -77,7 +77,7 @@
     (if (empty? validation-errors)
       (try
         (make-response 200 (delete-patient id))
-        (catch Exception e (make-response 500 {:message e})))
+        (catch Exception e (make-response 400 {:message e})))
       (make-response 400 {:message "validation error"
                           :errors  validation-errors}))))
 

@@ -13,7 +13,8 @@ To start a web server for the application, run:
 To start tests, run:
 
     lein test
-    
+    or
+    lein test test/hs_test/models/patient_model_test.clj 
 
 To start REPL, run:
 

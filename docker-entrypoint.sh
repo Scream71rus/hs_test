@@ -8,7 +8,5 @@ while [ $PING != 1 ] ; do
     sleep 1s
 done
 
-psql -h db -d hs_test -U hs_test -f ./hs_test.sql
-
 mv $(lein ring uberjar | sed -n 's/^Created \(.*standalone\.jar\)/\1/p') app-standalone.jar
 $(java -jar app-standalone.jar)
